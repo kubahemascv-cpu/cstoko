@@ -282,7 +282,7 @@ const KPI_FIELDS = [
 // ═══════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════
-const today = () => new Date().toISOString().split('T')[0];
+const today = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
 const isDark = () => document.body.classList.contains('dark');
 const TODAY = today();
 const DAYS_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
@@ -371,7 +371,7 @@ function getHistory() {
   const keys = [];
   for(let i=1;i<=30;i++) {
     const d = new Date(); d.setDate(d.getDate()-i);
-    const dk = d.toISOString().split('T')[0];
+    const dk = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
     const data = loadDay(dk);
     if(Object.keys(data).length > 0) keys.push({dk, data});
     if(keys.length >= 7) break;
