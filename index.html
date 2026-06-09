@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>CS Toko — Kubah Emas</title>
+<meta name="theme-color" id="tc" content="#1C1E26">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CS Toko">
+<link rel="apple-touch-icon" id="touch-icon">
+<link rel="manifest" id="pwa-manifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF3;--card:#FFF;--card2:#FFFDF0;--bdr:#E8E4D0;
+  --txt:#1C1E26;--txt2:#3D3D3A;--mut:#8A8678;
+  --pri:#F5C518;--pri-d:#D4A800;--pri-l:#FFFBEB;--pri-b:#FDE68A;
+  --ch:#1C1E26;--ch-m:#2D3142;
+  --grn:#16A34A;--grn-l:#F0FDF4;--grn-b:#BBF7D0;
+  --red:#DC2626;--red-l:#FEF2F2;--red-b:#FECACA;
+  --shd:0 2px 8px rgba(0,0,0,.07);--ovl:rgba(0,0,0,.5);
+  --font:'Poppins',-apple-system,sans-serif;
+}
+body.dark{
+  --bg:#0D0E10;--card:#161820;--card2:#1E2028;--bdr:#252830;
+  --txt:#E8E0C0;--txt2:#A09880;--mut:#5A5E68;
+  --pri:#F5C518;--pri-d:#B8960A;--pri-l:#1A1600;--pri-b:#3A3000;
+  --ch:#1C1E26;--ch-m:#2D3142;
+  --grn:#4ADE80;--grn-l:#0D2818;--grn-b:#14532D;
+  --red:#F87171;--red-l:#1A0606;--red-b:#7F1D1D;
+  --shd:0 2px 8px rgba(0,0,0,.3);--ovl:rgba(0,0,0,.75);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);height:100dvh;display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;transition:background .3s,color .3s}
+
+/* ── TOPBAR ── */
+.topbar{flex-shrink:0;background:var(--ch);padding:11px 16px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.topbar-row{display:flex;justify-content:space-between;align-items:center;max-width:640px;margin:0 auto}
+.brand{display:flex;flex-direction:column;gap:1px}
+.brand-main{font-size:14px;font-weight:700;color:var(--pri)}
+.brand-sub{font-size:10px;color:rgba(255,255,255,.45);font-weight:400}
+.topbar-right{display:flex;gap:8px;align-items:center}
+.pic-badge{background:rgba(245,197,24,.15);border:1px solid rgba(245,197,24,.3);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--pri);font-weight:600;cursor:pointer}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.icon-btn:active{background:rgba(255,255,255,.12)}
+.date-bar{background:rgba(0,0,0,.2);padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.05)}
+.date-bar-inner{display:flex;justify-content:space-between;align-items:center;max-width:640px;margin:0 auto;font-size:11px;color:rgba(255,255,255,.5);font-weight:500}
+.date-hi{color:var(--pri);font-weight:600}
+
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.inner{padding:14px 14px 20px;max-width:640px;margin:0 auto}
+
+/* ── BOTTOM NAV ── */
+.botnav{flex-shrink:0;background:var(--card);border-top:1px solid var(--bdr);display:flex;padding-bottom:env(safe-area-inset-bottom,0);transition:background .3s,border-color .3s}
+.navbtn{flex:1;border:none;background:none;font-family:var(--font);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:9px 0;cursor:pointer;color:var(--mut);font-size:9px;font-weight:500;transition:color .15s;-webkit-tap-highlight-color:transparent}
+.navbtn.active{color:var(--pri)}
+.navbtn svg{width:20px;height:20px}
+.navbtn.active svg{stroke:var(--pri)}
+
+/* ── PROGRESS HERO ── */
+.prog-hero{background:var(--ch);border-radius:14px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.prog-hero::after{content:'';position:absolute;top:-30%;right:-15%;width:150px;height:150px;background:rgba(245,197,24,.06);border-radius:50%}
+.ph-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.ph-title{font-size:11px;font-weight:600;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.08em}
+.ph-score{font-size:11px;font-weight:700;color:var(--pri)}
+.ph-track{background:rgba(255,255,255,.12);border-radius:99px;height:6px;overflow:hidden}
+.ph-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pri),#FFE066);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.ph-pills{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.ph-pill{font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+.ph-pill.done{background:rgba(245,197,24,.2);color:var(--pri)}
+
+/* ── TASK CARD ── */
+.task-card{background:var(--card);border-radius:12px;margin-bottom:8px;box-shadow:var(--shd);overflow:hidden;border-left:3px solid var(--bdr);transition:border-color .2s,background .3s}
+.task-card.p1{border-left-color:#EF4444}
+.task-card.p2{border-left-color:#F97316}
+.task-card.p3{border-left-color:#3B82F6}
+.task-card.p4{border-left-color:#8B5CF6}
+.task-card.st-selesai{opacity:.7}
+.task-meta{display:flex;align-items:center;gap:6px;padding:9px 12px 0;flex-wrap:wrap}
+.task-num{width:20px;height:20px;border-radius:5px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--mut);flex-shrink:0}
+.task-time{font-size:9.5px;color:var(--mut);font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pri-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.task-body{padding:6px 12px 10px;cursor:pointer}
+.task-act{font-size:12.5px;font-weight:500;color:var(--txt);line-height:1.5;margin-bottom:3px}
+.task-act.done{text-decoration:line-through;color:var(--mut)}
+.task-tgt{font-size:10.5px;color:var(--mut);display:flex;align-items:center;gap:4px}
+.task-footer{padding:0 12px 10px;display:flex;align-items:center;gap:8px}
+.st-badge{font-size:10px;font-weight:700;padding:4px 11px;border-radius:20px;cursor:pointer;border:1.5px solid;transition:all .15s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.st-belum  {background:var(--card2);color:var(--mut);border-color:var(--bdr)}
+.st-selesai{background:var(--grn-l);color:var(--grn);border-color:var(--grn-b)}
+.st-kendala{background:var(--red-l);color:var(--red);border-color:var(--red-b)}
+.note-preview{flex:1;font-size:10.5px;color:var(--mut);font-style:italic;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--bdr);background:none;color:var(--mut);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.note-btn.has-note{border-color:var(--pri-b);color:var(--pri-d);background:var(--pri-l)}
+
+/* ── LEGEND ── */
+.legend-row{display:flex;gap:10px;flex-wrap:wrap;padding:6px 2px 14px}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--mut)}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+
+/* ── KPI SECTION ── */
+.kpi-summary-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.kpi-stat{background:var(--card);border-radius:10px;padding:11px 12px;box-shadow:var(--shd)}
+.kpi-stat-lbl{font-size:9.5px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.kpi-stat-val{font-size:18px;font-weight:700}
+.kpi-stat-tgt{font-size:9.5px;margin-top:2px}
+.kpi-field{background:var(--card);border-radius:11px;padding:11px 13px;margin-bottom:7px;box-shadow:var(--shd);display:flex;align-items:center;gap:10px;transition:background .3s}
+.kfi-ico{font-size:20px;flex-shrink:0;width:32px;text-align:center}
+.kfi-info{flex:1;min-width:0}
+.kfi-lbl{font-size:12px;font-weight:600;color:var(--txt);margin-bottom:1px}
+.kfi-tgt{font-size:10px;color:var(--mut)}
+.kfi-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.kfi-inp{width:80px;padding:6px 10px;border:1.5px solid var(--bdr);border-radius:8px;font-family:var(--font);font-size:13px;font-weight:700;color:var(--txt);background:var(--card2);outline:none;text-align:right;-webkit-appearance:none;transition:border-color .15s}
+.kfi-inp:focus{border-color:var(--pri)}
+.kfi-sel{width:100px;padding:6px 8px;border:1.5px solid var(--bdr);border-radius:8px;font-family:var(--font);font-size:12px;color:var(--txt);background:var(--card2);outline:none;-webkit-appearance:none;appearance:none}
+.kfi-ind{font-size:10px;font-weight:600;text-align:right}
+
+/* ── LAPORAN TAB ── */
+.laporan-hero{background:linear-gradient(135deg,var(--ch),#2D3142);border-radius:14px;padding:16px 18px;margin-bottom:12px;color:#fff;position:relative;overflow:hidden}
+.laporan-hero::before{content:'';position:absolute;top:-40%;right:-15%;width:160px;height:160px;background:rgba(245,197,24,.08);border-radius:50%}
+.lh-label{font-size:9.5px;font-weight:600;opacity:.5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.lh-score{font-size:32px;font-weight:700;color:var(--pri);line-height:1}
+.lh-sub{font-size:11px;opacity:.55;margin-top:4px}
+.lh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px;position:relative;z-index:1}
+.lh-mini{background:rgba(255,255,255,.08);border-radius:8px;padding:8px;text-align:center}
+.lh-mini-val{font-size:16px;font-weight:700;color:var(--pri)}
+.lh-mini-lbl{font-size:8.5px;opacity:.6;margin-top:2px}
+
+.sync-card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:var(--shd)}
+.sync-url-row{display:flex;gap:8px;margin-bottom:10px}
+.sync-inp{flex:1;padding:9px 12px;border:1.5px solid var(--bdr);border-radius:9px;font-family:var(--font);font-size:12px;color:var(--txt);background:var(--card2);outline:none;transition:border-color .15s}
+.sync-inp:focus{border-color:var(--pri)}
+
+.hist-item{background:var(--card);border-radius:10px;padding:11px 13px;margin-bottom:7px;box-shadow:var(--shd);display:flex;align-items:center;gap:12px}
+.hist-date{font-size:12px;font-weight:600;color:var(--txt);flex:1}
+.hist-sub{font-size:10px;color:var(--mut);margin-top:1px}
+.hist-pct{font-size:15px;font-weight:700}
+
+/* ── CARDS GENERIC ── */
+.card{background:var(--card);border-radius:13px;margin-bottom:10px;box-shadow:var(--shd);overflow:hidden;transition:background .3s}
+.cp{padding:13px}
+.chd{display:flex;align-items:center;gap:8px;padding:10px 13px;border-bottom:1px solid var(--bdr)}
+.chd-bar{width:3px;height:13px;border-radius:2px;background:var(--pri);flex-shrink:0}
+.ctitle{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.cact{margin-left:auto}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.btn-pri{background:var(--pri);color:var(--ch)}
+.btn-pri:active{background:var(--pri-d)}
+.btn-out{background:none;border:1.5px solid var(--bdr);color:var(--txt2)}
+.btn-dark{background:var(--ch);color:#fff}
+.btn-sm{padding:7px 12px;font-size:11.5px;border-radius:8px}
+.btn-xs{padding:5px 10px;font-size:10.5px;border-radius:7px}
+
+/* ── MODAL ── */
+.modal-ovl{display:none;position:fixed;inset:0;background:var(--ovl);z-index:200;align-items:flex-end;justify-content:center}
+.modal-ovl.show{display:flex}
+.modal-sheet{background:var(--card);border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,16px);transition:background .3s}
+.modal-handle{width:40px;height:4px;background:var(--bdr);border-radius:2px;margin:12px auto 0}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 17px;border-bottom:1px solid var(--bdr)}
+.modal-title{font-size:14px;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:14px;border:none;background:var(--card2);color:var(--txt2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:15px 17px}
+
+/* ── FORMS ── */
+.fg{margin-bottom:12px}
+.flbl{font-size:11px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px}
+.finp{width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:9px;font-family:var(--font);font-size:13.5px;color:var(--txt);background:var(--card2);outline:none;transition:border-color .15s;-webkit-appearance:none}
+.finp:focus{border-color:var(--pri)}
+.ftarea{resize:vertical;min-height:80px;line-height:1.5}
+.st-sel-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px}
+.st-sel-btn{padding:10px 4px;border-radius:9px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;border:2px solid var(--bdr);background:none;color:var(--mut);transition:all .15s;text-align:center}
+.st-sel-btn.sel-belum.active{border-color:var(--bdr);background:var(--card2);color:var(--txt)}
+.st-sel-btn.sel-selesai.active{border-color:var(--grn-b);background:var(--grn-l);color:var(--grn)}
+.st-sel-btn.sel-kendala.active{border-color:var(--red-b);background:var(--red-l);color:var(--red)}
+code{font-size:10px;font-family:monospace;background:var(--card2);border:1px solid var(--bdr);padding:10px 12px;border-radius:8px;display:block;word-break:break-all;line-height:1.6;color:var(--mut);margin-top:6px;overflow-x:auto;white-space:pre-wrap}
+
+/* ── MISC ── */
+.slbl{font-size:10.5px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.09em;padding:14px 2px 6px}
+.divider{height:1px;background:var(--bdr);margin:8px 0}
+.empty{text-align:center;padding:40px 20px;color:var(--mut)}
+.main::-webkit-scrollbar{width:3px}
+.main::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <div class="topbar-row">
+    <div class="brand">
+      <div class="brand-main">CS Toko — Kubah Emas</div>
+      <div class="brand-sub">Jobdesk Tracker Harian</div>
+    </div>
+    <div class="topbar-right">
+      <div class="pic-badge" id="pic-badge">Tri</div>
+      <button class="icon-btn" id="theme-btn">
+        <svg id="theme-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="date-bar">
+  <div class="date-bar-inner">
+    <span id="date-display"></span>
+    <span id="shift-info" class="date-hi">08:00 – 16:00</span>
+  </div>
+</div>
+
+<main class="main" id="main-scroll">
+  <div class="inner" id="content"></div>
+</main>
+
+<nav class="botnav">
+  <button class="navbtn active" data-nav="checklist">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Checklist
+  </button>
+  <button class="navbtn" data-nav="kpi">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    KPI Output
+  </button>
+  <button class="navbtn" data-nav="laporan">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>
+    Laporan
+  </button>
+</nav>
+
+<div class="modal-ovl" id="modal-ovl">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-handle"></div>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// TASK DATA
+// ═══════════════════════════════════
+const TASKS = [
+  {id:1,  jam:'Sepanjang jam kerja', pri:'P1', cat:'Respons Cepat',   act:'Balas chat masuk: leads baru dan leads lama yang membutuhkan informasi barang', tgt:'100% chat terjawab'},
+  {id:2,  jam:'08:00 & 14:30',       pri:'P2', cat:'Pipeline',        act:'Simpan kontak, beri label, catat kebutuhan, dan tentukan jadwal follow-up leads masuk', tgt:'100% leads baru tercatat'},
+  {id:3,  jam:'09:00',               pri:'P2', cat:'Pipeline',        act:'Follow-Up 2 untuk prospek aktif sesuai jadwal', tgt:'100% leads ditangani'},
+  {id:4,  jam:'10:00',               pri:'P3', cat:'Relasi',          act:'Follow-up para tukang', tgt:'10 kontak'},
+  {id:5,  jam:'13:30',               pri:'P3', cat:'Relasi',          act:'Follow-up konsumen lama / repeat customer', tgt:'10 kontak'},
+  {id:6,  jam:'08:15 & 13:10',       pri:'P1', cat:'Respons Cepat',   act:'Cek dan balas komentar Facebook', tgt:'Semua komentar relevan ditanggapi'},
+  {id:7,  jam:'08:15 & 13:10',       pri:'P1', cat:'Respons Cepat',   act:'Cek dan balas DM Facebook', tgt:'Semua DM ditanggapi'},
+  {id:8,  jam:'08:05 / 13:00 / 15:00',pri:'P4',cat:'Konten',          act:'Buat Status WA untuk toko dari materi yang tersedia', tgt:'3 status'},
+  {id:9,  jam:'15:30',               pri:'P2', cat:'Pipeline',        act:'Rekap leads masuk, follow-up, deals, omzet, dan kendala', tgt:'1 laporan terisi'},
+  {id:10, jam:'15:50',               pri:'P2', cat:'Pipeline',        act:'Kirim laporan harian dan absen pulang', tgt:'Terkirim'},
+];
+
+const PRI_COLORS = {
+  P1:{bg:'#FEE2E2',c:'#DC2626',b:'#FCA5A5',dBg:'#2D1010',dC:'#F87171',dB:'#7F1D1D'},
+  P2:{bg:'#FFF7ED',c:'#EA580C',b:'#FDba74',dBg:'#2D1A00',dC:'#FB923C',dB:'#7C2D12'},
+  P3:{bg:'#EFF6FF',c:'#2563EB',b:'#BFDBFE',dBg:'#0A1828',dC:'#60A5FA',dB:'#1E3A5F'},
+  P4:{bg:'#F5F3FF',c:'#7C3AED',b:'#C4B5FD',dBg:'#1A0A2E',dC:'#A78BFA',dB:'#4C1D95'},
+};
+
+const ST_LABELS = {BELUM:'● BELUM',SELESAI:'✓ SELESAI',KENDALA:'⚠ KENDALA'};
+
+const KPI_FIELDS = [
+  {id:'chat_masuk',  e:'💬',lbl:'Total Chat Masuk',   tgt:'Dicatat',       type:'num'},
+  {id:'chat_jawab',  e:'✅',lbl:'Chat Terjawab',       tgt:'100% dari masuk',type:'num'},
+  {id:'leads_baru',  e:'👥',lbl:'Leads Baru Tersimpan',tgt:'100% leads baru',type:'num'},
+  {id:'fu2_jatuh',   e:'📅',lbl:'FU-2 Jatuh Tempo',   tgt:'Dicatat',       type:'num'},
+  {id:'fu2_selesai', e:'🎯',lbl:'FU-2 Selesai',        tgt:'100% jatuh tempo',type:'num'},
+  {id:'fu_tukang',   e:'🔨',lbl:'Follow-up Tukang',    tgt:'10 kontak',     type:'num'},
+  {id:'fu_konsumen', e:'👋',lbl:'FU Konsumen Lama',    tgt:'10 kontak',     type:'num'},
+  {id:'komen_fb',    e:'👍',lbl:'Komentar FB Ditanggapi',tgt:'Semua relevan',type:'sel',opts:['Semua','Sebagian','Tidak Ada']},
+  {id:'dm_fb',       e:'📩',lbl:'DM Facebook Ditanggapi',tgt:'Semua DM',   type:'sel',opts:['Semua','Sebagian','Tidak Ada']},
+  {id:'status_wa',   e:'📱',lbl:'Status WA Diposting', tgt:'3 status',      type:'num'},
+  {id:'deals',       e:'🤝',lbl:'Deals Hari Ini',       tgt:'Dicatat',       type:'num'},
+  {id:'omzet_wa',    e:'💰',lbl:'Omzet dari WA (Rp)',  tgt:'Dicatat',       type:'num'},
+  {id:'leads_masalah',e:'⚠️',lbl:'Leads Bermasalah',   tgt:'Dicatat',       type:'num'},
+];
+
+// ═══════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════
+const today = () => new Date().toISOString().split('T')[0];
+const isDark = () => document.body.classList.contains('dark');
+const TODAY = today();
+const DAYS_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const NOW = new Date();
+const DATE_FMT = NOW.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+// ═══════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════
+let DB = { cfg:{pic:'Tri',gsUrl:''} };
+const DK = d => 'cs_d_' + d;
+
+function loadDay(d) {
+  try { return JSON.parse(localStorage.getItem(DK(d)) || '{}'); } catch(e) { return {}; }
+}
+function saveDay(d, data) {
+  localStorage.setItem(DK(d), JSON.stringify(data));
+}
+function loadCfg() {
+  try { const c = JSON.parse(localStorage.getItem('cs_cfg') || 'null'); if(c) DB.cfg = {...DB.cfg,...c}; } catch(e) {}
+}
+function saveCfg() { localStorage.setItem('cs_cfg', JSON.stringify(DB.cfg)); }
+
+function getTodayData() { return loadDay(TODAY); }
+function getTaskStatus(taskId) { const d=getTodayData(); return (d.tasks && d.tasks[taskId] && d.tasks[taskId].status) || 'BELUM'; }
+function getTaskNote(taskId) { const d=getTodayData(); return (d.tasks && d.tasks[taskId] && d.tasks[taskId].note) || ''; }
+function getKPI() { const d=getTodayData(); return d.kpi || {}; }
+
+function setTaskStatus(taskId, status) {
+  const d = getTodayData();
+  if(!d.tasks) d.tasks = {};
+  if(!d.tasks[taskId]) d.tasks[taskId] = {};
+  d.tasks[taskId].status = status;
+  saveDay(TODAY, d);
+}
+function setTaskNote(taskId, note) {
+  const d = getTodayData();
+  if(!d.tasks) d.tasks = {};
+  if(!d.tasks[taskId]) d.tasks[taskId] = {};
+  d.tasks[taskId].note = note;
+  saveDay(TODAY, d);
+}
+function setKPI(field, val) {
+  const d = getTodayData();
+  if(!d.kpi) d.kpi = {};
+  d.kpi[field] = val;
+  saveDay(TODAY, d);
+}
+
+// ═══════════════════════════════════
+// CALCULATIONS
+// ═══════════════════════════════════
+function calcDone(d) {
+  if(!d || !d.tasks) return 0;
+  return TASKS.filter(t => d.tasks[t.id] && d.tasks[t.id].status === 'SELESAI').length;
+}
+
+function kpiIndicator(f, kpi) {
+  const v = kpi[f.id];
+  if(v === undefined || v === '') return '';
+  if(f.type === 'sel') return v === 'Semua' ? '<span style="color:var(--grn)">✓</span>' : v === 'Sebagian' ? '<span style="color:var(--pri-d)">~</span>' : '<span style="color:var(--red)">✗</span>';
+  const n = parseInt(v) || 0;
+  if(f.id === 'chat_jawab') {
+    const m = parseInt(kpi.chat_masuk) || 0;
+    if(m === 0) return '';
+    const pct = Math.round(n/m*100);
+    const c = pct >= 100 ? 'var(--grn)' : pct >= 80 ? 'var(--pri-d)' : 'var(--red)';
+    return `<span style="color:${c}">${pct}%</span>`;
+  }
+  if(f.id === 'fu2_selesai') {
+    const jt = parseInt(kpi.fu2_jatuh) || 0;
+    if(jt === 0) return n > 0 ? '<span style="color:var(--grn)">✓</span>' : '';
+    const c = n >= jt ? 'var(--grn)' : 'var(--pri-d)';
+    return `<span style="color:${c}">${n}/${jt}</span>`;
+  }
+  const targets = {fu_tukang:10,fu_konsumen:10,status_wa:3};
+  if(targets[f.id]) {
+    const tgt = targets[f.id];
+    const c = n >= tgt ? 'var(--grn)' : n >= tgt*0.7 ? 'var(--pri-d)' : 'var(--red)';
+    return `<span style="color:${c}">${n}/${tgt}</span>`;
+  }
+  return n > 0 ? '<span style="color:var(--grn)">✓</span>' : '';
+}
+
+function getHistory() {
+  const keys = [];
+  for(let i=1;i<=30;i++) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const dk = d.toISOString().split('T')[0];
+    const data = loadDay(dk);
+    if(Object.keys(data).length > 0) keys.push({dk, data});
+    if(keys.length >= 7) break;
+  }
+  return keys;
+}
+
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+const ST = { tab: 'checklist' };
+
+// ═══════════════════════════════════
+// VIEW: CHECKLIST
+// ═══════════════════════════════════
+function vChecklist() {
+  const d = getTodayData();
+  const done = calcDone(d);
+  const pct = Math.round(done/TASKS.length*100);
+  const dark = isDark();
+
+  const pills = TASKS.map(t => {
+    const st = getTaskStatus(t.id);
+    const active = st === 'SELESAI';
+    return `<span class="ph-pill ${active?'done':''}">${t.id}</span>`;
+  }).join('');
+
+  const taskCards = TASKS.map(t => {
+    const st = getTaskStatus(t.id);
+    const note = getTaskNote(t.id);
+    const pc = PRI_COLORS[t.pri];
+    const pbg = dark ? pc.dBg : pc.bg;
+    const pc2 = dark ? pc.dC : pc.c;
+    const pb = dark ? pc.dB : pc.b;
+    const priHtml = `<span class="pri-badge" style="background:${pbg};color:${pc2};border:1px solid ${pb}">${t.pri} ${t.cat}</span>`;
+    const stClass = 'st-'+st.toLowerCase();
+    return `<div class="task-card ${t.pri.toLowerCase().replace('-','')} ${st==='SELESAI'?'st-selesai':''}">
+<div class="task-meta">
+  <div class="task-num">${t.id}</div>
+  <div class="task-time">⏰ ${t.jam}</div>
+  ${priHtml}
+</div>
+<div class="task-body" data-task-body="${t.id}">
+  <div class="task-act ${st==='SELESAI'?'done':''}">${t.act}</div>
+  <div class="task-tgt">🎯 ${t.tgt}</div>
+</div>
+<div class="task-footer">
+  <button class="st-badge ${stClass}" data-cycle="${t.id}">${ST_LABELS[st]}</button>
+  <div class="note-preview">${note?'📝 '+note:''}</div>
+  <button class="note-btn ${note?'has-note':''}" data-note="${t.id}">📝</button>
+</div>
+</div>`;
+  }).join('');
+
+  return `
+<div class="prog-hero">
+  <div class="ph-top">
+    <div class="ph-title">Checklist Hari Ini</div>
+    <div class="ph-score">${done} / ${TASKS.length} Selesai · ${pct}%</div>
+  </div>
+  <div class="ph-track"><div class="ph-fill" style="width:${pct}%"></div></div>
+  <div class="ph-pills">${pills}</div>
+</div>
+<div class="legend-row">
+  <div class="legend-item"><div class="legend-dot" style="background:#EF4444"></div>P1 Respons Cepat</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#F97316"></div>P2 Pipeline</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>P3 Relasi</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>P4 Konten</div>
+</div>
+${taskCards}`;
+}
+
+// ═══════════════════════════════════
+// VIEW: KPI OUTPUT
+// ═══════════════════════════════════
+function vKPI() {
+  const kpi = getKPI();
+  const chatM = parseInt(kpi.chat_masuk)||0;
+  const chatJ = parseInt(kpi.chat_jawab)||0;
+  const chatPct = chatM > 0 ? Math.round(chatJ/chatM*100) : 0;
+  const chatC = chatPct >= 100 ? 'var(--grn)' : chatPct >= 80 ? 'var(--pri-d)' : chatPct > 0 ? 'var(--red)' : 'var(--mut)';
+  const fuT = parseInt(kpi.fu_tukang)||0;
+  const fuK = parseInt(kpi.fu_konsumen)||0;
+  const deals = parseInt(kpi.deals)||0;
+  const stWA = parseInt(kpi.status_wa)||0;
+
+  const summary = `
+<div class="kpi-summary-row">
+  <div class="kpi-stat"><div class="kpi-stat-lbl">Chat Terjawab</div><div class="kpi-stat-val" style="color:${chatC}">${chatM>0?chatPct+'%':'–'}</div><div class="kpi-stat-tgt" style="color:${chatC}">${chatJ}/${chatM} chat</div></div>
+  <div class="kpi-stat"><div class="kpi-stat-lbl">Status WA</div><div class="kpi-stat-val" style="color:${stWA>=3?'var(--grn)':stWA>0?'var(--pri-d)':'var(--mut)'}">${stWA}/3</div><div class="kpi-stat-tgt">target 3/hari</div></div>
+  <div class="kpi-stat"><div class="kpi-stat-lbl">FU Tukang</div><div class="kpi-stat-val" style="color:${fuT>=10?'var(--grn)':fuT>0?'var(--pri-d)':'var(--mut)'}">${fuT}/10</div><div class="kpi-stat-tgt">target 10/hari</div></div>
+  <div class="kpi-stat"><div class="kpi-stat-lbl">Deals</div><div class="kpi-stat-val" style="color:${deals>0?'var(--grn)':'var(--mut)'}">${deals}</div><div class="kpi-stat-tgt">hari ini</div></div>
+</div>`;
+
+  const fields = KPI_FIELDS.map(f => {
+    const v = kpi[f.id] !== undefined ? kpi[f.id] : '';
+    const ind = kpiIndicator(f, kpi);
+    if(f.type === 'sel') {
+      const opts = f.opts.map(o => `<option value="${o}" ${v===o?'selected':''}>${o}</option>`).join('');
+      return `<div class="kpi-field">
+<div class="kfi-ico">${f.e}</div>
+<div class="kfi-info"><div class="kfi-lbl">${f.lbl}</div><div class="kfi-tgt">Target: ${f.tgt}</div></div>
+<div class="kfi-right"><select class="kfi-sel finp" data-kf="${f.id}">${opts}</select>${ind?`<div class="kfi-ind">${ind}</div>`:''}</div>
+</div>`;
+    }
+    return `<div class="kpi-field">
+<div class="kfi-ico">${f.e}</div>
+<div class="kfi-info"><div class="kfi-lbl">${f.lbl}</div><div class="kfi-tgt">Target: ${f.tgt}</div></div>
+<div class="kfi-right"><input class="kfi-inp" type="number" inputmode="numeric" min="0" placeholder="0" value="${v}" data-kf="${f.id}">${ind?`<div class="kfi-ind">${ind}</div>`:''}</div>
+</div>`;
+  }).join('');
+
+  return `<div class="slbl">Ringkasan</div>${summary}
+<div class="slbl">Input KPI Output</div>
+${fields}
+<div style="padding:10px 2px 2px;font-size:11px;color:var(--mut);line-height:1.6">Data tersimpan otomatis saat diketik. Sync ke Google Sheets melalui tab Laporan.</div>`;
+}
+
+// ═══════════════════════════════════
+// VIEW: LAPORAN
+// ═══════════════════════════════════
+function vLaporan() {
+  const d = getTodayData();
+  const done = calcDone(d);
+  const pct = Math.round(done/TASKS.length*100);
+  const kpi = getKPI();
+  const chatM = parseInt(kpi.chat_masuk)||0;
+  const chatJ = parseInt(kpi.chat_jawab)||0;
+  const fuT = parseInt(kpi.fu_tukang)||0;
+  const fuK = parseInt(kpi.fu_konsumen)||0;
+  const stWA = parseInt(kpi.status_wa)||0;
+  const deals = parseInt(kpi.deals)||0;
+  const lhGrid = `
+<div class="lh-grid">
+  <div class="lh-mini"><div class="lh-mini-val">${chatJ}</div><div class="lh-mini-lbl">Chat Jawab</div></div>
+  <div class="lh-mini"><div class="lh-mini-val">${fuT}</div><div class="lh-mini-lbl">FU Tukang</div></div>
+  <div class="lh-mini"><div class="lh-mini-val">${stWA}</div><div class="lh-mini-lbl">Status WA</div></div>
+  <div class="lh-mini"><div class="lh-mini-val">${deals}</div><div class="lh-mini-lbl">Deals</div></div>
+</div>`;
+
+  const hist = getHistory();
+  const histH = hist.length ? hist.map(h => {
+    const hd = calcDone(h.data);
+    const hp = Math.round(hd/TASKS.length*100);
+    const hc = hp >= 90 ? 'var(--grn)' : hp >= 70 ? 'var(--pri-d)' : 'var(--red)';
+    const dt = new Date(h.dk+'T00:00:00').toLocaleDateString('id-ID',{weekday:'short',day:'numeric',month:'short'});
+    return `<div class="hist-item">
+<div><div class="hist-date">${dt}</div><div class="hist-sub">Checklist ${hd}/${TASKS.length}</div></div>
+<div class="hist-pct" style="color:${hc}">${hp}%</div>
+</div>`;
+  }).join('') : '<div class="empty" style="padding:20px"><span style="font-size:13px;color:var(--mut)">Belum ada riwayat</span></div>';
+
+  return `
+<div class="laporan-hero" style="position:relative">
+  <div style="position:relative;z-index:1">
+    <div class="lh-label">Progres Hari Ini · ${DB.cfg.pic}</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:8px">${DATE_FMT}</div>
+    <div class="lh-score">${pct}%</div>
+    <div class="lh-sub">Checklist: ${done}/${TASKS.length} selesai</div>
+    ${lhGrid}
+  </div>
+</div>
+
+<div class="card">
+  <div class="chd"><div class="chd-bar"></div><div class="ctitle">Sync ke Google Sheets</div></div>
+  <div class="cp">
+    <div style="font-size:11.5px;color:var(--mut);margin-bottom:10px;line-height:1.6">Masukkan URL Apps Script lalu klik <strong>Kirim Laporan</strong>. Data checklist + KPI hari ini dikirim ke Google Sheets.</div>
+    <div class="fg">
+      <label class="flbl">Apps Script Web App URL</label>
+      <input class="sync-inp finp" id="gs-url" type="url" placeholder="https://script.google.com/..." value="${DB.cfg.gsUrl||''}">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-dark" style="flex:1" id="btn-kirim">📤 Kirim Laporan</button>
+      <button class="btn btn-out btn-sm" id="btn-dl-csv">⬇ CSV</button>
+    </div>
+    <div id="sync-status" style="font-size:11px;text-align:center;margin-top:8px;color:var(--mut)"></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chd"><div class="chd-bar"></div><div class="ctitle">Setup Apps Script</div></div>
+  <div class="cp">
+    <div style="font-size:11.5px;color:var(--mut);line-height:1.7;margin-bottom:8px">
+      1. Buka <strong>script.google.com</strong> → Project baru<br>
+      2. Hapus kode default, paste kode di bawah<br>
+      3. <strong>Deploy → Web App → Execute as: Me → Who has access: Anyone</strong><br>
+      4. Copy URL deploy → paste di kolom di atas
+    </div>
+    <div style="font-size:10.5px;font-weight:600;color:var(--txt);margin-bottom:4px">Kode Apps Script:</div>
+    <code>function doPost(e){try{var d=JSON.parse(e.postData.contents);var ss=SpreadsheetApp.getActiveSpreadsheet();var ts=Utilities.formatDate(new Date(),'Asia/Jakarta','dd/MM/yyyy HH:mm');var logSh=ss.getSheetByName('Log Aktivitas')||ss.insertSheet('Log Aktivitas');if(logSh.getLastRow()==0)logSh.appendRow(['Timestamp Arsip','Tanggal','PIC','No','Jam','Aktivitas','Status','Catatan']);d.tasks.forEach(function(t){logSh.appendRow([ts,d.tanggal,d.pic,t.no,t.jam,t.aktivitas,t.status,t.catatan||'']);});var rSh=ss.getSheetByName('Ringkasan Harian')||ss.insertSheet('Ringkasan Harian');if(rSh.getLastRow()==0)rSh.appendRow(['Timestamp Arsip','Tanggal','PIC','Total Chat Masuk','Chat Terjawab','Leads Baru','FU-2 Jatuh Tempo','FU-2 Selesai','FU Tukang','FU Konsumen Lama','Komentar FB','DM FB','Status WA','Deals','Omzet WA','Leads Bermasalah','% Checklist']);var k=d.kpi;var done=d.tasks.filter(function(t){return t.status==='SELESAI';}).length;rSh.appendRow([ts,d.tanggal,d.pic,k.chat_masuk||0,k.chat_jawab||0,k.leads_baru||0,k.fu2_jatuh||0,k.fu2_selesai||0,k.fu_tukang||0,k.fu_konsumen||0,k.komen_fb||'-',k.dm_fb||'-',k.status_wa||0,k.deals||0,k.omzet_wa||0,k.leads_masalah||0,Math.round(done/10*100)+'%']);return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);}catch(ex){return ContentService.createTextOutput(JSON.stringify({ok:false,err:ex.toString()})).setMimeType(ContentService.MimeType.JSON);}}</code>
+  </div>
+</div>
+
+<div class="slbl">Riwayat 7 Hari Terakhir</div>
+${histH}`;
+}
+
+// ═══════════════════════════════════
+// MODALS
+// ═══════════════════════════════════
+let _modal = {};
+
+function openModal(type, data={}) {
+  _modal = {type, ...data};
+  document.getElementById('modal-content').innerHTML = buildModal(type, data);
+  document.getElementById('modal-ovl').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('modal-ovl').classList.remove('show');
+}
+
+function buildModal(type, data) {
+  if(type === 'task') return mTask(data.id);
+  if(type === 'settings') return mSettings();
+  return '';
+}
+
+function mTask(id) {
+  const task = TASKS.find(t => t.id === id);
+  if(!task) return '';
+  const dark = isDark();
+  const pc = PRI_COLORS[task.pri];
+  const pbg = dark ? pc.dBg : pc.bg;
+  const pc2 = dark ? pc.dC : pc.c;
+  const pb = dark ? pc.dB : pc.b;
+  const curSt = getTaskStatus(id);
+  const curNote = getTaskNote(id);
+  const stBtns = ['BELUM','SELESAI','KENDALA'].map(s => {
+    const cls = s === 'BELUM' ? 'sel-belum' : s === 'SELESAI' ? 'sel-selesai' : 'sel-kendala';
+    return `<button class="st-sel-btn ${cls} ${curSt===s?'active':''}" data-st-pick="${s}">${ST_LABELS[s]}</button>`;
+  }).join('');
+  return `<div class="modal-hd">
+<div>
+  <div class="modal-title">Task #${id}</div>
+  <div style="font-size:10px;color:var(--mut);margin-top:1px">${task.jam}</div>
+</div>
+<button class="modal-close" id="mc-close">×</button>
+</div>
+<div class="modal-body">
+<div style="background:${pbg};border:1px solid ${pb};border-radius:10px;padding:11px 13px;margin-bottom:14px">
+  <div style="font-size:10px;font-weight:700;color:${pc2};text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">${task.pri} · ${task.cat}</div>
+  <div style="font-size:13px;color:var(--txt);font-weight:500;line-height:1.5">${task.act}</div>
+  <div style="font-size:10.5px;color:var(--mut);margin-top:5px">🎯 ${task.tgt}</div>
+</div>
+<div class="fg">
+  <label class="flbl">Status</label>
+  <div class="st-sel-row" id="st-sel-row">${stBtns}</div>
+</div>
+<div class="fg">
+  <label class="flbl">Catatan / Realisasi</label>
+  <textarea class="finp ftarea" id="task-note" placeholder="Tulis realisasi atau kendala...">${curNote}</textarea>
+</div>
+<button class="btn btn-pri" style="width:100%" id="task-save" data-tid="${id}">Simpan</button>
+</div>`;
+}
+
+function mSettings() {
+  return `<div class="modal-hd"><div class="modal-title">⚙ Pengaturan</div><button class="modal-close" id="mc-close">×</button></div>
+<div class="modal-body">
+<div class="fg"><label class="flbl">Nama PIC / CS</label><input class="finp" id="cfg-pic" type="text" value="${DB.cfg.pic}" placeholder="Nama kamu"></div>
+<div class="fg"><label class="flbl">Apps Script URL</label><input class="finp" id="cfg-gs" type="url" value="${DB.cfg.gsUrl||''}" placeholder="https://script.google.com/..."></div>
+<div style="margin-bottom:14px;padding:11px;background:var(--card2);border-radius:9px;font-size:11.5px;color:var(--mut);line-height:1.6">
+  Checklist reset otomatis setiap hari. Data lama tersimpan sebagai riwayat.
+</div>
+<button class="btn btn-pri" style="width:100%" id="cfg-save">Simpan Pengaturan</button>
+</div>`;
+}
+
+// ═══════════════════════════════════
+// SYNC & EXPORT
+// ═══════════════════════════════════
+function buildPayload() {
+  const d = getTodayData();
+  const kpi = d.kpi || {};
+  return {
+    tanggal: TODAY,
+    pic: DB.cfg.pic,
+    tasks: TASKS.map(t => ({
+      no: t.id,
+      jam: t.jam,
+      aktivitas: t.act,
+      status: (d.tasks && d.tasks[t.id] && d.tasks[t.id].status) || 'BELUM',
+      catatan: (d.tasks && d.tasks[t.id] && d.tasks[t.id].note) || ''
+    })),
+    kpi
+  };
+}
+
+async function syncToGS() {
+  const url = document.getElementById('gs-url') ? document.getElementById('gs-url').value.trim() : DB.cfg.gsUrl;
+  const st = document.getElementById('sync-status');
+  if(!url) { if(st){st.textContent='Masukkan URL Apps Script terlebih dahulu.';st.style.color='var(--red)';}alert('Masukkan URL Apps Script di kolom URL.');return; }
+  DB.cfg.gsUrl = url; saveCfg();
+  if(st){ st.textContent='Mengirim data...';st.style.color='var(--mut)'; }
+  try {
+    await fetch(url, {method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildPayload())});
+    if(st){ st.textContent='✓ Laporan berhasil dikirim! Cek Google Sheets Anda.';st.style.color='var(--grn)'; }
+    // Auto-mark task 10 as SELESAI
+    if(getTaskStatus(10) === 'BELUM') { setTaskStatus(10, 'SELESAI'); render(); }
+  } catch(e) {
+    if(st){ st.textContent='✓ Permintaan terkirim. Periksa Google Sheets Anda.';st.style.color='var(--grn)'; }
+  }
+}
+
+function exportCSV() {
+  const p = buildPayload();
+  const BOM = '\uFEFF';
+  const q = s => '"' + String(s||'').replace(/"/g,'""') + '"';
+  const row = arr => arr.map(q).join(',') + '\n';
+  let csv = BOM;
+  csv += row(['LAPORAN HARIAN CS TOKO — KUBAH EMAS']);
+  csv += row(['Tanggal', p.tanggal, 'PIC', p.pic]);
+  csv += '\n';
+  csv += row(['=== CHECKLIST AKTIVITAS ===']);
+  csv += row(['No','Jam','Aktivitas','Status','Catatan']);
+  p.tasks.forEach(t => { csv += row([t.no, t.jam, t.aktivitas, t.status, t.catatan]); });
+  csv += '\n';
+  csv += row(['=== KPI OUTPUT ===']);
+  KPI_FIELDS.forEach(f => { csv += row([f.lbl, p.kpi[f.id]||'', f.tgt]); });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='laporan-cs-'+TODAY+'.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════
+// RENDER
+// ═══════════════════════════════════
+function render() {
+  document.querySelectorAll('.navbtn').forEach(b => b.classList.toggle('active', b.dataset.nav === ST.tab));
+  document.getElementById('pic-badge').textContent = DB.cfg.pic;
+  const c = document.getElementById('content');
+  if(ST.tab === 'checklist') c.innerHTML = vChecklist();
+  if(ST.tab === 'kpi')       c.innerHTML = vKPI();
+  if(ST.tab === 'laporan')   c.innerHTML = vLaporan();
+  document.getElementById('main-scroll').scrollTop = 0;
+}
+
+// ═══════════════════════════════════
+// EVENTS
+// ═══════════════════════════════════
+let _selSt = '';
+
+document.addEventListener('click', e => {
+  // Nav
+  const nav = e.target.closest('[data-nav]');
+  if(nav && !e.target.closest('.btn') && !e.target.closest('.navbtn') === false){/* handled below */}
+  const navbtn = e.target.closest('.navbtn');
+  if(navbtn){ ST.tab = navbtn.dataset.nav; render(); return; }
+
+  // Close modal
+  if(e.target.closest('#mc-close') || e.target === document.getElementById('modal-ovl')){ closeModal(); return; }
+
+  // Theme toggle
+  if(e.target.closest('#theme-btn')){ toggleTheme(); return; }
+
+  // PIC badge → settings
+  if(e.target.closest('#pic-badge')){ openModal('settings'); return; }
+
+  // Cycle task status
+  const cycleBtn = e.target.closest('[data-cycle]');
+  if(cycleBtn) {
+    const id = parseInt(cycleBtn.dataset.cycle);
+    const cur = getTaskStatus(id);
+    const next = cur === 'BELUM' ? 'SELESAI' : cur === 'SELESAI' ? 'KENDALA' : 'BELUM';
+    setTaskStatus(id, next);
+    render();
+    return;
+  }
+
+  // Open task note modal
+  const noteBtn = e.target.closest('[data-note]');
+  if(noteBtn){ openModal('task', {id: parseInt(noteBtn.dataset.note)}); return; }
+
+  // Open task detail modal (click body)
+  const taskBody = e.target.closest('[data-task-body]');
+  if(taskBody){ openModal('task', {id: parseInt(taskBody.dataset.taskBody)}); return; }
+
+  // Status picker in modal
+  const stPick = e.target.closest('[data-st-pick]');
+  if(stPick) {
+    _selSt = stPick.dataset.stPick;
+    document.querySelectorAll('[data-st-pick]').forEach(b => b.classList.remove('active'));
+    stPick.classList.add('active');
+    return;
+  }
+
+  // Save task from modal
+  const taskSave = e.target.closest('#task-save');
+  if(taskSave) {
+    const tid = parseInt(taskSave.dataset.tid);
+    const note = document.getElementById('task-note').value;
+    const st = _selSt || getTaskStatus(tid);
+    setTaskStatus(tid, st);
+    setTaskNote(tid, note);
+    closeModal();
+    render();
+    return;
+  }
+
+  // Settings save
+  if(e.target.closest('#cfg-save')) {
+    DB.cfg.pic = document.getElementById('cfg-pic').value.trim() || 'Tri';
+    DB.cfg.gsUrl = document.getElementById('cfg-gs').value.trim();
+    saveCfg();
+    closeModal();
+    render();
+    return;
+  }
+
+  // Sync
+  if(e.target.closest('#btn-kirim')){ syncToGS(); return; }
+  if(e.target.closest('#btn-dl-csv')){ exportCSV(); return; }
+});
+
+// KPI input auto-save
+document.addEventListener('input', e => {
+  const kf = e.target.closest('[data-kf]');
+  if(kf){ setKPI(kf.dataset.kf, kf.value); render(); return; }
+});
+
+// Init modal selected status
+document.addEventListener('DOMContentLoaded', () => {});
+
+// ═══════════════════════════════════
+// THEME
+// ═══════════════════════════════════
+function toggleTheme() {
+  const dark = document.body.classList.toggle('dark');
+  localStorage.setItem('cs_theme', dark ? 'dark' : 'light');
+  document.getElementById('tc').content = dark ? '#0D0E10' : '#1C1E26';
+  updateThemeIco(dark);
+  render();
+}
+function updateThemeIco(dark) {
+  const ico = document.getElementById('theme-ico');
+  if(!ico) return;
+  ico.innerHTML = dark
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+}
+
+// ═══════════════════════════════════
+// PWA
+// ═══════════════════════════════════
+const ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F5C518"/><stop offset="100%" stop-color="#D97706"/></linearGradient></defs>
+<rect width="512" height="512" rx="115" fill="url(#g)"/>
+<text x="256" y="250" font-family="Arial Black,Arial,sans-serif" font-size="200" font-weight="900" fill="#1C1E26" text-anchor="middle">CS</text>
+<text x="256" y="360" font-family="Arial,sans-serif" font-size="70" font-weight="700" fill="rgba(28,30,38,0.55)" text-anchor="middle">TOKO</text>
+<polyline points="180,400 210,430 310,340" fill="none" stroke="#1C1E26" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+</svg>`;
+
+const ICON_URI = 'data:image/svg+xml;base64,' + btoa(ICON);
+const tl = document.getElementById('touch-icon'); if(tl) tl.href = ICON_URI;
+try {
+  const m = {name:'CS Toko — Kubah Emas',short_name:'CS Toko',description:'Jobdesk Tracker Harian CS Toko',start_url:'./',display:'standalone',orientation:'portrait',background_color:'#FAFAF3',theme_color:'#1C1E26',icons:[{src:ICON_URI,sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}]};
+  const bl = new Blob([JSON.stringify(m)], {type:'application/json'});
+  document.getElementById('pwa-manifest').href = URL.createObjectURL(bl);
+} catch(e) {}
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+document.getElementById('date-display').textContent = DATE_FMT;
+loadCfg();
+const th = localStorage.getItem('cs_theme');
+if(th === 'dark') { document.body.classList.add('dark'); document.getElementById('tc').content = '#0D0E10'; updateThemeIco(true); }
+render();
+</script>
+</body>
+</html>
