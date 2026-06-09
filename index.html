@@ -700,14 +700,16 @@ function exportCSV() {
 // ═══════════════════════════════════
 // RENDER
 // ═══════════════════════════════════
-function render() {
+function render(keepScroll) {
+  const ms = document.getElementById('main-scroll');
+  const sp = keepScroll ? ms.scrollTop : 0;
   document.querySelectorAll('.navbtn').forEach(b => b.classList.toggle('active', b.dataset.nav === ST.tab));
   document.getElementById('pic-badge').textContent = DB.cfg.pic;
   const c = document.getElementById('content');
   if(ST.tab === 'checklist') c.innerHTML = vChecklist();
   if(ST.tab === 'kpi')       c.innerHTML = vKPI();
   if(ST.tab === 'laporan')   c.innerHTML = vLaporan();
-  document.getElementById('main-scroll').scrollTop = 0;
+  ms.scrollTop = sp;
 }
 
 // ═══════════════════════════════════
@@ -738,7 +740,7 @@ document.addEventListener('click', e => {
     const cur = getTaskStatus(id);
     const next = cur === 'BELUM' ? 'SELESAI' : cur === 'SELESAI' ? 'KENDALA' : 'BELUM';
     setTaskStatus(id, next);
-    render();
+    render(true);
     return;
   }
 
@@ -790,7 +792,7 @@ document.addEventListener('click', e => {
 // KPI input auto-save
 document.addEventListener('input', e => {
   const kf = e.target.closest('[data-kf]');
-  if(kf){ setKPI(kf.dataset.kf, kf.value); render(); return; }
+  if(kf){ setKPI(kf.dataset.kf, kf.value); return; }
 });
 
 // Init modal selected status
