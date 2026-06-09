@@ -667,7 +667,7 @@ async function syncToGS() {
   DB.cfg.gsUrl = url; saveCfg();
   if(st){ st.textContent='Mengirim data...';st.style.color='var(--mut)'; }
   try {
-    await fetch(url, {method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildPayload())});
+    await fetch(url, {method:'POST',mode:'no-cors',body:JSON.stringify(buildPayload())});
     if(st){ st.textContent='✓ Laporan berhasil dikirim! Cek Google Sheets Anda.';st.style.color='var(--grn)'; }
     // Auto-mark task 10 as SELESAI
     if(getTaskStatus(10) === 'BELUM') { setTaskStatus(10, 'SELESAI'); render(); }
