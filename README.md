@@ -1,2 +1,2 @@
 # cstoko
-App untuk CS Admin Toko
+App untuk Jobdesk CS Admin Toko
