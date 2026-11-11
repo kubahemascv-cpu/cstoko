@@ -539,15 +539,32 @@ function setMultiEntries(fieldId, arr){
   setKPI(fieldId+'_arr', JSON.stringify(arr));
   setKPI(fieldId, arr.map(e => e.name+'='+e.count).join(', '));
 }
+// Ketikan di baris "tambah" yang belum ditekan "+ Tambah" ikut disimpan sebagai entri
+// (jumlah kosong = 1). Dipanggil sebelum halaman dibangun ulang & sebelum Kirim,
+// supaya ketikan tidak hilang diam-diam.
+function commitPendingMulti(){
+  let n = 0;
+  KPI_FIELDS.filter(f => f.type === 'multi').forEach(f => {
+    const nameEl = document.getElementById('madd-name-'+f.id);
+    const countEl = document.getElementById('madd-count-'+f.id);
+    if(!nameEl || !countEl) return;
+    const name = nameEl.value.trim();
+    if(!name) return;
+    const raw = countEl.value.trim();
+    const count = raw === '' ? 1 : (parseInt(raw)||0);
+    const arr = getMultiEntries(f.id);
+    arr.push({name, count});
+    setMultiEntries(f.id, arr);
+    nameEl.value = ''; countEl.value = '';
+    n++;
+  });
+  return n;
+}
 function addMultiEntry(fieldId){
   const nameEl = document.getElementById('madd-name-'+fieldId);
-  const countEl = document.getElementById('madd-count-'+fieldId);
-  const name = nameEl.value.trim();
-  const count = parseInt(countEl.value)||0;
-  if(!name) { nameEl.focus(); return; }
-  const arr = getMultiEntries(fieldId);
-  arr.push({name, count});
-  setMultiEntries(fieldId, arr);
+  if(!nameEl) return;
+  if(!nameEl.value.trim()) { nameEl.focus(); return; }
+  commitPendingMulti();   // entri field ini + ketikan di field sebelahnya (tidak ikut terhapus)
   render(true);
 }
 function delMultiEntry(fieldId, idx){
@@ -754,6 +771,16 @@ function vLaporan() {
   <div class="chd"><div class="chd-bar"></div><div class="ctitle">Sync ke Google Sheets</div></div>
   <div class="cp">
     <div style="font-size:11.5px;color:var(--mut);margin-bottom:10px;line-height:1.6">Masukkan URL Apps Script lalu klik <strong>Kirim Laporan</strong>. Data checklist + KPI hari ini dikirim ke Google Sheets.</div>
+    ${(() => {
+      const mk = id => { const a = getMultiEntries(id); return a.length ? a.map(e => esc(e.name)+' = '+e.count).join(', ') : '<span style="color:var(--red)">kosong</span>'; };
+      const k = getKPI().chat_no_respon || 0;
+      return `<div id="presend" style="font-size:11.5px;line-height:1.7;background:var(--bg2,rgba(127,127,127,.08));border-radius:8px;padding:8px 10px;margin-bottom:10px">
+        <strong>Yang akan terkirim (poin 10):</strong><br>
+        Chat tidak direspon: ${k}<br>
+        Diluar Area: ${mk('diluar_area')}<br>
+        Diluar Produk: ${mk('diluar_produk')}
+      </div>`;
+    })()}
     <div class="fg">
       <label class="flbl">Apps Script Web App URL</label>
       <input class="sync-inp finp" id="gs-url" type="url" placeholder="https://script.google.com/..." value="${DB.cfg.gsUrl||''}">
@@ -763,6 +790,7 @@ function vLaporan() {
       <button class="btn btn-out btn-sm" id="btn-dl-csv">⬇ CSV</button>
     </div>
     <div id="sync-status" style="font-size:11px;text-align:center;margin-top:8px;color:var(--mut)"></div>
+    <div style="font-size:10px;text-align:center;margin-top:6px;color:var(--mut);opacity:.7">Versi app: v10</div>
   </div>
 </div>
 
@@ -1001,6 +1029,7 @@ function buildPayload() {
 }
 
 async function syncToGS() {
+  commitPendingMulti();
   const url = document.getElementById('gs-url') ? document.getElementById('gs-url').value.trim() : DB.cfg.gsUrl;
   const st = document.getElementById('sync-status');
   if(!url) { if(st){st.textContent='Masukkan URL Apps Script terlebih dahulu.';st.style.color='var(--red)';}alert('Masukkan URL Apps Script di kolom URL.');return; }
@@ -1053,6 +1082,7 @@ function exportCSV() {
 // RENDER
 // ═══════════════════════════════════
 function render(keepScroll) {
+  commitPendingMulti();   // jangan buang ketikan yang belum ditambahkan
   const ms = document.getElementById('main-scroll');
   const sp = keepScroll ? ms.scrollTop : 0;
   document.querySelectorAll('.navbtn').forEach(b => b.classList.toggle('active', b.dataset.nav === ST.tab));
@@ -1151,6 +1181,13 @@ document.addEventListener('click', e => {
   }
 });
 
+// Enter di baris tambah (Diluar Area / Diluar Produk) = tekan "+ Tambah"
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Enter') return;
+  const m = /^madd-(?:name|count)-(.+)$/.exec((e.target && e.target.id) || '');
+  if(m){ e.preventDefault(); addMultiEntry(m[1]); }
+});
+
 // KPI input auto-save
 document.addEventListener('input', e => {
   const kf = e.target.closest('[data-kf]');
@@ -1167,6 +1204,14 @@ document.addEventListener('DOMContentLoaded', () => {});
 // PWA (Service Worker statis)
 // ═══════════════════════════════════
 if('serviceWorker' in navigator){
+  // Kalau ada versi baru yang mengambil alih, muat ulang SEKALI supaya langsung dipakai
+  // (sebelumnya versi baru baru terlihat setelah app dibuka dua kali).
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function(){
+    if(!hadController || reloaded) return;
+    reloaded = true; location.reload();
+  });
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('./sw.js')
       .then(function(r){ console.log('[SW] OK', r.scope); })
